@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="P507ProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Fullname" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+    <Property Name="IsActivated" Type="Boolean" Nullable="false" />
+    <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Sales" Relationship="P507ProjectModel.FK__Sales__UserId__5070F446" FromRole="User" ToRole="Sale" />
+  </EntityType>
+  <EntityContainer Name="P507ProjectEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="Medicines" EntityType="P507ProjectModel.Medicine" />
+    <EntitySet Name="Types" EntityType="P507ProjectModel.Type" />
+    <AssociationSet Name="FK__Medicines__Types__398D8EEE" Association="P507ProjectModel.FK__Medicines__Types__398D8EEE">
+      <End Role="Type" EntitySet="Types" />
+      <End Role="Medicine" EntitySet="Medicines" />
+    </AssociationSet>
+    <EntitySet Name="SaleMedicines" EntityType="P507ProjectModel.SaleMedicine" />
+    <EntitySet Name="Sales" EntityType="P507ProjectModel.Sale" />
+    <AssociationSet Name="FK__SaleMedic__Medic__534D60F1" Association="P507ProjectModel.FK__SaleMedic__Medic__534D60F1">
+      <End Role="Medicine" EntitySet="Medicines" />
+      <End Role="SaleMedicine" EntitySet="SaleMedicines" />
+    </AssociationSet>
+    <AssociationSet Name="FK__SaleMedic__SaleI__5441852A" Association="P507ProjectModel.FK__SaleMedic__SaleI__5441852A">
+      <End Role="Sale" EntitySet="Sales" />
+      <End Role="SaleMedicine" EntitySet="SaleMedicines" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Sales__UserId__5070F446" Association="P507ProjectModel.FK__Sales__UserId__5070F446">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Sale" EntitySet="Sales" />
+    </AssociationSet>
+    <EntitySet Name="SalesDetails" EntityType="P507ProjectModel.SalesDetail" />
+  </EntityContainer>
+  <EntityType Name="Medicine">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Price" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="Amount" Type="Int32" />
+    <Property Name="TypesId" Type="Int32" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Type" Relationship="P507ProjectModel.FK__Medicines__Types__398D8EEE" FromRole="Medicine" ToRole="Type" />
+    <NavigationProperty Name="SaleMedicines" Relationship="P507ProjectModel.FK__SaleMedic__Medic__534D60F1" FromRole="Medicine" ToRole="SaleMedicine" />
+  </EntityType>
+  <EntityType Name="Type">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Deleted" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Medicines" Relationship="P507ProjectModel.FK__Medicines__Types__398D8EEE" FromRole="Type" ToRole="Medicine" />
+  </EntityType>
+  <Association Name="FK__Medicines__Types__398D8EEE">
+    <End Type="P507ProjectModel.Type" Role="Type" Multiplicity="0..1" />
+    <End Type="P507ProjectModel.Medicine" Role="Medicine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Type">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Medicine">
+        <PropertyRef Name="TypesId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="SaleMedicine">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MedicineId" Type="Int32" />
+    <Property Name="SaleId" Type="Int32" />
+    <Property Name="Amount" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Medicine" Relationship="P507ProjectModel.FK__SaleMedic__Medic__534D60F1" FromRole="SaleMedicine" ToRole="Medicine" />
+    <NavigationProperty Name="Sale" Relationship="P507ProjectModel.FK__SaleMedic__SaleI__5441852A" FromRole="SaleMedicine" ToRole="Sale" />
+  </EntityType>
+  <EntityType Name="Sale">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserId" Type="Int32" />
+    <Property Name="Total" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="Time" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="SaleMedicines" Relationship="P507ProjectModel.FK__SaleMedic__SaleI__5441852A" FromRole="Sale" ToRole="SaleMedicine" />
+    <NavigationProperty Name="User" Relationship="P507ProjectModel.FK__Sales__UserId__5070F446" FromRole="Sale" ToRole="User" />
+  </EntityType>
+  <Association Name="FK__SaleMedic__Medic__534D60F1">
+    <End Type="P507ProjectModel.Medicine" Role="Medicine" Multiplicity="0..1" />
+    <End Type="P507ProjectModel.SaleMedicine" Role="SaleMedicine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Medicine">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SaleMedicine">
+        <PropertyRef Name="MedicineId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__SaleMedic__SaleI__5441852A">
+    <End Type="P507ProjectModel.Sale" Role="Sale" Multiplicity="0..1" />
+    <End Type="P507ProjectModel.SaleMedicine" Role="SaleMedicine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sale">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SaleMedicine">
+        <PropertyRef Name="SaleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Sales__UserId__5070F446">
+    <End Type="P507ProjectModel.User" Role="User" Multiplicity="0..1" />
+    <End Type="P507ProjectModel.Sale" Role="Sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Sale">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="SalesDetail">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Fullname" />
+      <PropertyRef Name="Total" />
+      <PropertyRef Name="Time" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Fullname" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Total" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="Time" Type="DateTime" Nullable="false" Precision="0" />
+  </EntityType>
+</Schema>
